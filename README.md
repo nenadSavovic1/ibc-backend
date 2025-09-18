@@ -48,6 +48,7 @@ PORT=3001
 EOF
 
 # 4) Initialize DB & generate Prisma client
+npx prisma generate
 npx prisma migrate dev --name init
 # (Optional GUI to browse data)
 # npx prisma studio
