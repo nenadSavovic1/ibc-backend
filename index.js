@@ -66,10 +66,10 @@ app.get("/users/:id", async (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-  const { email, name } = req.body || {};
+  const { email, password } = req.body || {};
   if (!email || typeof email !== "string") return res.status(400).json({ error: "email (string) is required" });
   try {
-    const user = await prisma.user.create({ data: { email, name } });
+    const user = await prisma.user.create({ data: { email, passwordHash: password} });
     res.status(201).json(user);
   } catch (e) {
     if (e.code === "P2002") return res.status(409).json({ error: "email already exists" });
