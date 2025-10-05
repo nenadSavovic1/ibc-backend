@@ -103,6 +103,24 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || typeof email !== "string") return res.status(400).json({ error: "email (string) is required" });
+  if (!password || typeof password !== "string") return res.status(400).json({ error: "password (string) is required" });
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || user.passwordHash !== password) {
+      return res.status(401).json({ error: "invalid email or password" });
+    }
+
+    res.json({ message: "login successful", user: { id: user.id, email: user.email } });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "login failed" });
+  }
+});
 
 const port = Number(process.env.PORT) || 3001;
 app.listen(port, () => console.log(`API running at http://localhost:${port}`));
